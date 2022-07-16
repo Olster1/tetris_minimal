@@ -934,7 +934,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, PSTR cmdline, int
 
         hwnd = CreateWindowExW(WS_EX_OVERLAPPEDWINDOW,
                                 winClass.lpszClassName,
-                                L"Woodland Editor",
+                                L"Tetris",
                                 WS_OVERLAPPEDWINDOW | WS_VISIBLE,
                                 window_xAt, window_yAt,
                                 initialWidth, 

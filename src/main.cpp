@@ -487,16 +487,8 @@ pushShader(renderer, &rectOutlineShader);
 
 if(editorState->createShape) {
 
-	// SQUARE,
-	// LINE,
-	// J_BLOCK,
-	// L_BLOCK,
-	// Z_BLOCK,
-	// S_BLOCK,
-	// T_BLOCK,
 
-
-	editorState->currentShape.type = SQUARE;//(TetrisShapeType)(int)(rand() % TETRIS_BLOCK_COUNT);     
+	editorState->currentShape.type = (TetrisShapeType)(int)(rand() % TETRIS_BLOCK_COUNT);     
 	editorState->currentShape.rotation = 0;
 	float2 positions[4];
 
