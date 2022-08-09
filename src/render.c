@@ -1,5 +1,15 @@
 static void* global_white_texture;
 
+struct Texture {
+	void *handle;
+
+	float width;
+	float height;
+	float aspectRatio_h_over_w;
+
+	float4 uvCoords;
+};
+
 enum RenderCommandType { 
 	RENDER_NULL,
 	RENDER_GLYPH,
@@ -187,8 +197,8 @@ static void pushGlyph(Renderer *r, void *textureHandle, float3 pos, float2 size,
 	if(textureIndex < 0) {
 		render_endCommand(r);
 
-		RenderCommand *c = getRenderCommand(r, RENDER_GLYPH);
-		int textureIndex = render_getTextureIndex(c, textureHandle);
+		c = getRenderCommand(r, RENDER_GLYPH);
+		textureIndex = render_getTextureIndex(c, textureHandle);
 		assert(textureIndex >= 0);
 	}
 
@@ -230,8 +240,8 @@ static void pushTexture(Renderer *r, void *textureHandle, float3 pos, float2 siz
 	if(textureIndex < 0) {
 		render_endCommand(r);
 
-		RenderCommand *c = getRenderCommand(r, RENDER_TEXTURE);
-		int textureIndex = render_getTextureIndex(c, textureHandle);
+		c = getRenderCommand(r, RENDER_TEXTURE);
+		textureIndex = render_getTextureIndex(c, textureHandle);
 		assert(textureIndex >= 0);
 	}
 
@@ -277,7 +287,7 @@ static void renderer_defaultScissors(Renderer *r, float windowWidth, float windo
 	pushScissorsRect(r, make_rect2f(0, 0, windowWidth, windowHeight));
 }
 
-static void pushRectOutline(Renderer *r, float3 pos, float2 size, float4 color) {
+static void pushRect(Renderer *r, float3 pos, float2 size, float4 color) {
 	pushTexture(r, global_white_texture, pos, size, color, make_float4(0, 0, 1, 1));
 }
 

@@ -17,7 +17,7 @@ set commonLinkFlags=user32.lib Comdlg32.lib d3d11.lib d3dcompiler.lib Shell32.li
 
 
 @echo Debug Build
-cl /DDEBUG_BUILD=1 %debugCompilerFlags% -Od ..\src\win32\win32_main.cpp -FeTetris /link %commonLinkFlags% ./myres.res
+cl /DDEBUG_BUILD=1 %debugCompilerFlags% -Od ..\src\win32\win32_main.cpp -FeFlapBirdFlap /link %commonLinkFlags% ./myres.res
 
 
 rem rem This is the Release option

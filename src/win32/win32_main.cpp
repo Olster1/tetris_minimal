@@ -1092,7 +1092,7 @@ int APIENTRY WinMain(HINSTANCE hInstance, HINSTANCE hInstPrev, PSTR cmdline, int
         RECT winRect;
         GetClientRect(hwnd, &winRect);
 
-        EditorState *editorState = updateEditor(dt, (float)(winRect.right - winRect.left), (float)(winRect.bottom - winRect.top), resized_window && !first_frame, save_file_location_utf8, settings_to_save);
+        EditorState *editorState = updateEditor(backendRenderer, dt, (float)(winRect.right - winRect.left), (float)(winRect.bottom - winRect.top), resized_window && !first_frame, save_file_location_utf8, settings_to_save);
 
 
         // //NOTE: Process our command buffer

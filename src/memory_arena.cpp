@@ -40,6 +40,8 @@ static size_t DEBUG_get_total_arena_size(Memory_Arena *arena) {
 
 #define pushArray(arena, size, type) (type *)pushSize(arena, sizeof(type)*size)
 
+#define pushArray_aligned(arena, size, type, alignmentBytes) (type *)pushSize(arena, sizeof(type)*size, alignmentBytes)
+
 void *pushSize(Memory_Arena *arena, size_t size) {
     if(!arena->pieces || ((arena->pieces->currentSize + size) > arena->pieces->totalSize)){ //doesn't fit in arena
         MemoryPiece *piece = arena->piecesFreeList; //get one of the free list

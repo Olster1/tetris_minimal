@@ -11,6 +11,7 @@ typedef struct {
 } d3d_shader_program;
 
 
+
 d3d_shader_program sdfFontShader;
 d3d_shader_program textureShader;
 d3d_shader_program rectOutlineShader;
@@ -63,7 +64,10 @@ typedef struct {
 
 
 
-static ID3D11ShaderResourceView* d3d_loadFromFileToGPU(ID3D11Device1 *d3d11Device, char *image_to_load_utf8) {
+static Texture d3d_loadFromFileToGPU(ID3D11Device1 *d3d11Device, char *image_to_load_utf8) {
+		
+	Texture result = {};
+
 	// Load Image
 	int texWidth;
 	int texHeight;
@@ -95,8 +99,30 @@ static ID3D11ShaderResourceView* d3d_loadFromFileToGPU(ID3D11Device1 *d3d11Devic
 
 	free(testTextureBytes);
 
-	return textureView;
+	result.width = texWidth;
+	result.height = texHeight;
+
+	result.handle = textureView;
+
+	result.aspectRatio_h_over_w = texHeight / texWidth;
+
+	result.uvCoords = make_float4(0, 0, 1, 1);
+
+	return result;
 }
+
+
+
+//NOTE: Functions that each renderer backed has to implement
+Texture backendRenderer_loadFromFileToGPU(BackendRenderer *backendRenderer, char *image_to_load_utf8) {
+	Texture result = d3d_loadFromFileToGPU(backendRenderer->d3d11Device, image_to_load_utf8);
+	return result;
+}
+
+
+//////////////
+
+
 
 static ID3D11ShaderResourceView* d3d_loadFromFileToGPU_array(ID3D11Device1 *d3d11Device, char *image_to_load_utf8_array, int arrayCount) {
 	// Load Image
@@ -320,7 +346,7 @@ static UINT backendRender_init(BackendRenderer *r, HWND hwnd) {
 	    DXGI_SWAP_CHAIN_DESC1 d3d11SwapChainDesc = {};
 	    d3d11SwapChainDesc.Width = 0; // use window width
 	    d3d11SwapChainDesc.Height = 0; // use window height
-	    d3d11SwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM; //_SRGB we dont do srgb anymore, otherwise we have to square all our colors
+	    d3d11SwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM_SRGB; //_SRGB we dont do srgb anymore, otherwise we have to square all our colors
 	    d3d11SwapChainDesc.SampleDesc.Count = 1;
 	    d3d11SwapChainDesc.SampleDesc.Quality = 0;
 	    d3d11SwapChainDesc.BufferUsage = DXGI_USAGE_RENDER_TARGET_OUTPUT;
@@ -434,10 +460,10 @@ static UINT backendRender_init(BackendRenderer *r, HWND hwnd) {
 		samplerDesc.AddressU       = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerDesc.AddressV       = D3D11_TEXTURE_ADDRESS_BORDER;
 		samplerDesc.AddressW       = D3D11_TEXTURE_ADDRESS_BORDER;
-		samplerDesc.BorderColor[0] = 1.0f;
-		samplerDesc.BorderColor[1] = 1.0f;
-		samplerDesc.BorderColor[2] = 1.0f;
-		samplerDesc.BorderColor[3] = 1.0f;
+		samplerDesc.BorderColor[0] = 0.0f;
+		samplerDesc.BorderColor[1] = 0.0f;
+		samplerDesc.BorderColor[2] = 0.0f;
+		samplerDesc.BorderColor[3] = 0.0f;
 		samplerDesc.ComparisonFunc = D3D11_COMPARISON_NEVER;
 
 		d3d11Device->CreateSamplerState(&samplerDesc, &r->samplerState_linearTexture);
@@ -514,11 +540,11 @@ static UINT backendRender_init(BackendRenderer *r, HWND hwnd) {
 
 #if DEBUG_BUILD
 	if(!global_white_texture) {
-		global_white_texture = (void *)d3d_loadFromFileToGPU(d3d11Device, "..\\src\\images\\white_texture.png");
+		global_white_texture = (void *)d3d_loadFromFileToGPU(d3d11Device, "..\\src\\images\\white_texture.png").handle;
 	}
 #else 
 	if(!global_white_texture) {
-		global_white_texture = (void *)d3d_loadFromFileToGPU(d3d11Device, ".\\white_texture.png");
+		global_white_texture = (void *)d3d_loadFromFileToGPU(d3d11Device, ".\\white_texture.png").handle;
 	}
 #endif
 

@@ -1,1 +1,1 @@
-..\bin\tetris.exe
+..\bin\FlapBirdFlap.exe
